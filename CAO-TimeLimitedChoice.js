@@ -1,5 +1,5 @@
 /*=============================================================================
-  CAO-TimeLimitedChoice.js - v1.0.0
+  CAO-TimeLimitedChoice.js - v1.0.1
  -----------------------------------------------------------------------------
   Copyright (c) 2022 CACAO
   Released under the MIT License.
@@ -13,7 +13,7 @@
  * @target MZ
  * @author CACAO
  * @url https://raw.githubusercontent.com/cacao-soft/RMMZ/main/CAO-TimeLimitedChoice.js
- * @plugindesc v1.0.0 時間制限のある選択肢を作れるようにします。
+ * @plugindesc v1.0.1 時間制限のある選択肢を作れるようにします。
  *
  * @help
  * == 使用方法 ==
@@ -60,7 +60,7 @@
  * @type select
  * @option 秒数
  * @option フレーム数
- * @default 0
+ * @default 秒数
  *
  *
  * @command T_SKIP
