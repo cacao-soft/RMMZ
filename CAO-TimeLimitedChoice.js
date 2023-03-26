@@ -1,5 +1,5 @@
 /*=============================================================================
-  CAO-TimeLimitedChoice.js - v1.0.3
+  CAO-TimeLimitedChoice.js - v1.0.4
  -----------------------------------------------------------------------------
   Copyright (c) 2022 CACAO
   Released under the MIT License.
@@ -13,7 +13,7 @@
  * @target MZ
  * @author CACAO
  * @url https://raw.githubusercontent.com/cacao-soft/RMMZ/main/CAO-TimeLimitedChoice.js
- * @plugindesc v1.0.3 時間制限のある選択肢を作れるようにします。
+ * @plugindesc v1.0.4 時間制限のある選択肢を作れるようにします。
  *
  * @help
  * == 使用方法 ==
@@ -91,15 +91,16 @@
 
     const pluginName = document.currentScript.src.split('/').pop().split(/\.(?=[^.]+$)/)[0]
     const pluginParams = PluginManager.parameters(pluginName)
-
+    
+    const TimeoutType = { none: 0, ok: -1, cancel: -2, skip: 99 }
     PluginManager.registerCommand(pluginName, 'T_SKIP',
-        args => { $gameMessage.setChoiceTimeoutType(99) })
+        args => { $gameMessage.setChoiceTimeoutType(TimeoutType.skip) })
     PluginManager.registerCommand(pluginName, 'T_OK',
-        args => { $gameMessage.setChoiceTimeoutType(-1) })
+        args => { $gameMessage.setChoiceTimeoutType(TimeoutType.ok) })
     PluginManager.registerCommand(pluginName, 'T_CANCEL',
-        args => { $gameMessage.setChoiceTimeoutType(-2) })
+        args => { $gameMessage.setChoiceTimeoutType(TimeoutType.cancel) })
     PluginManager.registerCommand(pluginName, 'T_INDEX',
-        args => { $gameMessage.setChoiceTimeoutType(args.index - 1) })
+        args => { $gameMessage.setChoiceTimeoutType(args.index) })
 
     function setTimeoutSwitch(value) {
         if (pluginParams.TimeoutSwitchID) {
@@ -122,7 +123,7 @@
     }
 
     Game_Message.prototype.clearChoiceTimeoutType = function() {
-        this._choiceTimeoutType = 0
+        this._choiceTimeoutType = TimeoutType.none
     }
 
     const _Game_Interpreter_setupChoices = Game_Interpreter.prototype.setupChoices
@@ -151,7 +152,7 @@
     }
 
     Window_ChoiceList.prototype.isEnabledTimeout = function() {
-      return $gameMessage.choiceTimeoutType() != 0
+      return $gameMessage.choiceTimeoutType() !== TimeoutType.none
     }
 
     Window_ChoiceList.prototype.checkTimeout = function() {
@@ -162,9 +163,10 @@
     }
     
     Window_ChoiceList.prototype.callTimeoutHandler = function() {
-        if (!this.isEnabledTimeout()) return
-        if ($gameMessage.choiceTimeoutType() < 0) {
-            if ($gameMessage.choiceTimeoutType() === -2) {
+        if (!this.isEnabledTimeout()) {
+            return
+        } else if ($gameMessage.choiceTimeoutType() < TimeoutType.none) {
+            if ($gameMessage.choiceTimeoutType() === TimeoutType.cancel) {
                 this.callCancelHandler()
             } else {
                 if (this.index() < 0) {
@@ -172,8 +174,8 @@
                 }
                 this.callOkHandler()
             }
-        } else if ($gameMessage.choiceTimeoutType() > 0) {
-            $gameMessage.onChoice($gameMessage.choiceTimeoutType())
+        } else {
+            $gameMessage.onChoice($gameMessage.choiceTimeoutType() - 1)
             this._messageWindow.terminateMessage()
             this.close()
         }
