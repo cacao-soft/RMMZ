@@ -1,5 +1,5 @@
 /*=============================================================================
-  CAO-TimeLimitedChoice.js - v1.0.2
+  CAO-TimeLimitedChoice.js - v1.0.3
  -----------------------------------------------------------------------------
   Copyright (c) 2022 CACAO
   Released under the MIT License.
@@ -150,14 +150,19 @@
         this.checkTimeout()
     }
 
+    Window_ChoiceList.prototype.isEnabledTimeout = function() {
+      return $gameMessage.choiceTimeoutType() != 0
+    }
+
     Window_ChoiceList.prototype.checkTimeout = function() {
-        if ($gameTimer.frames() === 0) {
+        if (this.isEnabledTimeout() && $gameTimer.frames() === 0) {
             this.callTimeoutHandler()
             setTimeoutSwitch(true)
         }
     }
-
+    
     Window_ChoiceList.prototype.callTimeoutHandler = function() {
+        if (!this.isEnabledTimeout()) return
         if ($gameMessage.choiceTimeoutType() < 0) {
             if ($gameMessage.choiceTimeoutType() === -2) {
                 this.callCancelHandler()
