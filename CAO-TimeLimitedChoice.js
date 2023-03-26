@@ -13,7 +13,7 @@
  * @target MZ
  * @author CACAO
  * @url https://raw.githubusercontent.com/cacao-soft/RMMZ/main/CAO-TimeLimitedChoice.js
- * @plugindesc v1.0.2 時間制限のある選択肢を作れるようにします。
+ * @plugindesc v1.0.3 時間制限のある選択肢を作れるようにします。
  *
  * @help
  * == 使用方法 ==
